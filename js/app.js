@@ -32,6 +32,7 @@ function initApp() {
     initHero();
     initScrollAnimations();
     initNavigation();
+    initMobileMenu();
     initTheme();
     initFilters();
     renderLibrary();
@@ -155,6 +156,8 @@ function initNavigation() {
             navLinks.forEach(l => l.classList.remove('active'));
             e.target.classList.add('active');
             showView(e.target.dataset.target);
+            // Close mobile menu when a link is clicked
+            closeMobileMenu();
         });
     });
 
@@ -163,6 +166,57 @@ function initNavigation() {
     });
 
     document.getElementById('log-date').valueAsDate = new Date();
+}
+
+// --- Mobile Menu ---
+function initMobileMenu() {
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const sidebar = document.querySelector('.sidebar');
+    
+    if (!mobileMenuBtn || !mobileOverlay || !sidebar) return;
+    
+    // Toggle menu when button is clicked
+    mobileMenuBtn.addEventListener('click', () => {
+        const isActive = sidebar.classList.contains('mobile-active');
+        if (isActive) {
+            closeMobileMenu();
+        } else {
+            openMobileMenu();
+        }
+    });
+    
+    // Close menu when overlay is clicked
+    mobileOverlay.addEventListener('click', closeMobileMenu);
+    
+    // Prevent body scroll when menu is open
+    function openMobileMenu() {
+        sidebar.classList.add('mobile-active');
+        mobileOverlay.classList.add('active');
+        mobileMenuBtn.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    function closeMobileMenu() {
+        sidebar.classList.remove('mobile-active');
+        mobileOverlay.classList.remove('active');
+        mobileMenuBtn.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    // Make closeMobileMenu available globally so navigation can use it
+    window.closeMobileMenu = closeMobileMenu;
+}
+
+function closeMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    
+    if (sidebar) sidebar.classList.remove('mobile-active');
+    if (mobileOverlay) mobileOverlay.classList.remove('active');
+    if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function showView(viewId) {

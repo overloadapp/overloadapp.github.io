@@ -1339,29 +1339,112 @@ canvas {
     }
 }
 
-@media (max-width: 600px) {
+/* ========================================
+   MOBILE MENU BUTTON
+   ======================================== */
+
+.mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1001;
+    width: 50px;
+    height: 50px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+}
+
+.mobile-menu-btn:hover {
+    background: var(--bg-tertiary);
+    transform: scale(1.05);
+}
+
+.mobile-menu-btn:active {
+    transform: scale(0.95);
+}
+
+.mobile-menu-btn span {
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: var(--transition);
+}
+
+.mobile-menu-btn.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-btn.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.mobile-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    .mobile-overlay {
+        display: block;
+    }
+    
     .sidebar {
-        width: 80px;
-        padding: 1.5rem 1rem;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+        width: 280px;
+        box-shadow: var(--shadow-lg);
     }
     
-    .logo span {
-        display: none;
-    }
-    
-    .nav-links li span:last-child {
-        display: none;
-    }
-    
-    .nav-links li {
-        justify-content: center;
-        padding: 1rem;
+    .sidebar.mobile-active {
+        transform: translateX(0);
     }
     
     .content {
-        margin-left: 80px;
-        padding: 2rem 1.5rem;
+        margin-left: 0;
+        padding: 5rem 1.5rem 2rem;
+        width: 100%;
     }
+    
+    .hero-nav {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
     
     .hero-title {
         font-size: 3rem;
