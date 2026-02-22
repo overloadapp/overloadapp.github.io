@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overload · Track Your Fitness Journey</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/data.js"></script>
+    <script type="module" src="js/chart.js"></script>
+    <script type="module" src="js/app.js"></script>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="hero-glow"></div>
+        <nav class="hero-nav">
+            <div class="hero-logo">
+                <img src="images/logo.png" alt="Overload Logo" class="logo-image">
+                <span class="logo-text">Overload</span>
+            </div>
+            <button id="get-started-btn" class="cta-button glow-button">
+                Get Started
+                <span class="button-glow"></span>
+            </button>
+        </nav>
+        
+        <div class="hero-content">
+            <div class="hero-badge fade-in">
+                <span class="badge-dot"></span>
+                Built for serious athletes
+            </div>
+            <h1 class="hero-title fade-in">
+                Your Fitness Journey,<br/>
+                <span class="gradient-text">Scientifically Tracked</span>
+            </h1>
+            <p class="hero-subtitle fade-in">
+                Track every rep, visualize your progress, and crush your goals with intelligent workout analytics. Built for athletes who demand precision.
+            </p>
+            <div class="hero-cta fade-in">
+                <button id="hero-cta-btn" class="cta-button glow-button primary">
+                    Start Tracking Free
+                    <span class="button-glow"></span>
+                </button>
+            </div>
+            <div class="hero-stats fade-in">
+                <div class="hero-stat">
+                    <div class="stat-number">50</div>
+                    <div class="stat-label">Exercises</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Muscle Groups</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="stat-number">∞</div>
+                    <div class="stat-label">Potential</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="scroll-indicator fade-in">
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="images/logo.png" alt="Overload Logo" class="logo-image">
+            <span>Over<span class="gradient-text">load</span></span>
+        </div>
+        <ul class="nav-links">
+            <li data-target="dashboard" class="active">
+                <span class="nav-icon">📊</span>
+                <span>Dashboard</span>
+            </li>
+            <li data-target="library">
+                <span class="nav-icon">🏋️</span>
+                <span>Exercises</span>
+            </li>
+            <li data-target="workouts">
+                <span class="nav-icon">📋</span>
+                <span>My Workouts</span>
+            </li>
+        </ul>
+        
+        <!-- User Profile (populated by JS) -->
+        <div class="user-profile"></div>
+    </nav>
+
+    <main class="content">
+        <section id="dashboard" class="view active-view">
+            <header class="section-header">
+                <div>
+                    <h1 class="page-title">Dashboard</h1>
+                    <p class="page-subtitle">Your fitness overview at a glance</p>
+                </div>
+                <button id="quick-add-btn" class="btn primary-btn glow-on-hover">
+                    <span>+ Quick Log</span>
+                </button>
+            </header>
+            
+            <div class="stats-grid">
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">🎯</div>
+                    <h3>Total Workouts</h3>
+                    <p id="dash-total-workouts" class="stat-value">0</p>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">🔥</div>
+                    <h3>Most Trained</h3>
+                    <p id="dash-most-trained" class="stat-value">-</p>
+                </div>
+            </div>
+
+            <h2 class="section-title">Recent Activity</h2>
+            <div id="recent-activity-list" class="activity-list">
+            </div>
+        </section>
+
+        <section id="library" class="view">
+            <header class="section-header">
+                <div>
+                    <h1 class="page-title">Exercise Library</h1>
+                    <p class="page-subtitle">Browse and track your favorite exercises</p>
+                </div>
+            </header>
+            
+            <div class="filter-section glass-card">
+                <div class="filter-group">
+                    <label for="muscle-filter">Muscle Group</label>
+                    <select id="muscle-filter" class="filter-select">
+                        <option value="all">Show All</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="equipment-filter">Equipment Type</label>
+                    <select id="equipment-filter" class="filter-select">
+                        <option value="all">Show All</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="exercise-grid" class="exercise-grid">
+            </div>
+        </section>
+
+        <section id="exercise-detail" class="view">
+            <header class="section-header">
+                <button id="back-btn" class="btn secondary-btn">← Back</button>
+                <div class="detail-header-info">
+                    <h1 id="detail-title" class="page-title">Exercise Name</h1>
+                    <span id="detail-muscle" class="badge gradient-badge">Muscle</span>
+                </div>
+            </header>
+            
+            <div class="detail-layout">
+                <div class="detail-left">
+                    <div class="glass-card image-card">
+                        <img id="detail-image" src="" alt="Exercise" class="detail-img">
+                    </div>
+                </div>
+
+                <div class="detail-right">
+                    <div class="log-form-card glass-card">
+                        <h3>Log Progress</h3>
+                        <form id="log-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Weight (kg)</label>
+                                    <input type="number" id="log-weight" step="0.5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Reps</label>
+                                    <input type="number" id="log-reps" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Sets</label>
+                                    <input type="number" id="log-sets" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" id="log-date" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn primary-btn w-100 glow-on-hover">Save Entry</button>
+                        </form>
+                    </div>
+
+                    <div class="stats-grid-small">
+                        <div class="stat-card glass-card small">
+                            <div class="stat-icon-small">📈</div>
+                            <h4>Avg Weight</h4>
+                            <p id="stat-avg" class="stat-value-small">0 kg</p>
+                        </div>
+                        <div class="stat-card glass-card small">
+                            <div class="stat-icon-small">🏆</div>
+                            <h4>PR (Max)</h4>
+                            <p id="stat-max" class="stat-value-small">0 kg</p>
+                        </div>
+                        <div class="stat-card glass-card small">
+                            <div class="stat-icon-small">💪</div>
+                            <h4>Total Sessions</h4>
+                            <p id="stat-sessions" class="stat-value-small">0</p>
+                        </div>
+                        <div class="stat-card glass-card small">
+                            <div class="stat-icon-small">⚡</div>
+                            <h4>Est. 1RM</h4>
+                            <p id="stat-1rm" class="stat-value-small">0 kg</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="graph-card glass-card full-width-graph">
+                <div class="graph-header">
+                    <h3>Progress Chart</h3>
+                    <div class="graph-filters">
+                        <button class="filter-btn active" data-days="90">3M</button>
+                        <button class="filter-btn" data-days="180">6M</button>
+                        <button class="filter-btn" data-days="365">1Y</button>
+                        <button class="filter-btn" data-days="all">All</button>
+                    </div>
+                </div>
+                <canvas id="progress-chart" width="600" height="300"></canvas>
+            </div>
+        </section>
+
+        <!-- Workouts Tab -->
+        <section id="workouts" class="view">
+            <header class="section-header">
+                <div>
+                    <h1 class="page-title">My Workouts</h1>
+                    <p class="page-subtitle">Your personalized workout programs</p>
+                </div>
+                <button id="create-workout-btn" class="btn primary-btn glow-on-hover">+ Create Workout</button>
+            </header>
+            <div id="workouts-list" class="workouts-list">
+                <!-- Workout programs will be rendered here -->
+            </div>
+        </section>
+
+        <!-- Workout Detail View -->
+        <section id="workout-detail" class="view">
+            <header class="section-header">
+                <button id="back-to-workouts-btn" class="btn secondary-btn">← Back to Workouts</button>
+                <div class="detail-header-info">
+                    <h1 id="workout-detail-title" class="page-title">Workout Name</h1>
+                    <button id="delete-workout-btn" class="btn btn-danger">Delete Workout</button>
+                </div>
+            </header>
+            <div id="workout-days-container" class="workout-days-container">
+                <!-- Workout days will be rendered here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <div id="quick-add-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-card">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Quick Log</h2>
+            <form id="quick-log-form">
+                <div class="form-group">
+                    <label>Exercise</label>
+                    <select id="quick-log-exercise" required></select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="number" id="quick-log-weight" step="0.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Reps</label>
+                        <input type="number" id="quick-log-reps" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Sets</label>
+                    <input type="number" id="quick-log-sets" required>
+                </div>
+                <button type="submit" class="btn primary-btn w-100 glow-on-hover">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Workout Modal -->
+    <div id="create-workout-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-card">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Create New Workout</h2>
+            <form id="create-workout-form">
+                <div class="form-group">
+                    <label for="workout-name">Workout Name</label>
+                    <input type="text" id="workout-name" required placeholder="e.g., My 4-Day Split">
+                </div>
+                <div class="form-group">
+                    <label for="days-per-week">Days Per Week</label>
+                    <input type="number" id="days-per-week" min="1" max="7" required placeholder="e.g., 4">
+                </div>
+                <button type="submit" class="btn primary-btn w-100 glow-on-hover">Create Workout</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add to Workout Modal -->
+    <div id="add-to-workout-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-card">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Add to Workout</h2>
+            <div id="workout-day-selector">
+                <!-- Workouts and days will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Day Name Modal -->
+    <div id="edit-day-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-card">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Edit Day Name</h2>
+            <form id="edit-day-form">
+                <div class="form-group">
+                    <label for="day-name-input">Day Name</label>
+                    <input type="text" id="day-name-input" required placeholder="e.g., Push Day">
+                </div>
+                <button type="submit" class="btn primary-btn w-100 glow-on-hover">Save</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
