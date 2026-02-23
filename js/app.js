@@ -197,13 +197,6 @@ function initMobileMenu() {
         document.body.style.overflow = 'hidden';
     }
     
-    function closeMobileMenu() {
-        sidebar.classList.remove('mobile-active');
-        mobileOverlay.classList.remove('active');
-        mobileMenuBtn.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    
     // Make closeMobileMenu available globally so navigation can use it
     window.closeMobileMenu = closeMobileMenu;
 }
@@ -281,7 +274,13 @@ function renderLibrary() {
         const card = document.createElement('div');
         card.className = 'exercise-card';
         card.innerHTML = `
-            <img class="exercise-card-image" src="${ex.image}" alt="${ex.name}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjMWExYTI0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM3MTgwOTYiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg=='">
+            <div class="exercise-image-wrapper">
+                <img class="exercise-card-image" 
+                     data-src="${ex.image}" 
+                     alt="${ex.name}" 
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%231a1a24%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23718096%22 font-size=%2224%22 font-family=%22Arial%22%3ENo Image%3C/text%3E%3C/svg%3E';">
+            </div>
             <div class="exercise-card-content">
                 <h3>${ex.name}</h3>
                 <div class="exercise-card-meta">
@@ -294,6 +293,9 @@ function renderLibrary() {
         card.addEventListener('click', () => openExerciseDetail(ex));
         grid.appendChild(card);
     });
+    
+    // Implement Intersection Observer for lazy loading
+    lazyLoadImages();
     
     // Populate Quick Add Select with all exercises (no filtering here)
     exercises.forEach(ex => {
@@ -595,13 +597,16 @@ function renderDayExercises(exerciseIds) {
         return '<div class="empty-day-message">No exercises added yet. Add exercises from the Exercise Library!</div>';
     }
 
-    return exerciseIds.map(exId => {
+    const html = exerciseIds.map(exId => {
         const exercise = exercises.find(e => e.id === exId);
         if (!exercise) return '';
         
         return `
             <div class="workout-exercise-card" onclick="app.showExerciseDetailFromWorkout('${exId}')">
-                <img src="${exercise.image}" alt="${exercise.name}" loading="lazy">
+                <img data-src="${exercise.image}" 
+                     alt="${exercise.name}" 
+                     loading="lazy"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect width=%22100%25%22 height=%22100%25%22 fill=%22%231a1a24%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23718096%22 font-size=%2216%22%3ENo Image%3C/text%3E%3C/svg%3E';">
                 <div class="workout-exercise-info">
                     <h4>${exercise.name}</h4>
                     <span class="badge">${exercise.muscleGroup}</span>
@@ -610,6 +615,35 @@ function renderDayExercises(exerciseIds) {
             </div>
         `;
     }).join('');
+    
+    // Re-apply lazy loading to newly added images
+    setTimeout(lazyLoadImages, 100);
+    
+    return html;
+}
+
+// --- Lazy Load Images ---
+function lazyLoadImages() {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                const src = img.getAttribute('data-src');
+                if (src) {
+                    img.src = src;
+                    img.removeAttribute('data-src');
+                    img.classList.add('loaded');
+                }
+                observer.unobserve(img);
+            }
+        });
+    }, {
+        rootMargin: '50px' // Start loading 50px before image enters viewport
+    });
+
+    document.querySelectorAll('img[data-src]').forEach(img => {
+        imageObserver.observe(img);
+    });
 }
 
 // --- Initialize Workout Forms ---
