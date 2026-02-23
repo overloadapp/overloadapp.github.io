@@ -153,9 +153,20 @@ function initNavigation() {
     const navLinks = document.querySelectorAll('.nav-links li');
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
+            // Get the li element, even if we clicked on a child element (icon or text)
+            const clickedLink = e.currentTarget;
+            const targetView = clickedLink.dataset.target;
+            
+            // Only proceed if there's a valid target
+            if (!targetView) return;
+            
+            // Update active state
             navLinks.forEach(l => l.classList.remove('active'));
-            e.target.classList.add('active');
-            showView(e.target.dataset.target);
+            clickedLink.classList.add('active');
+            
+            // Show the view
+            showView(targetView);
+            
             // Close mobile menu when a link is clicked
             closeMobileMenu();
         });
@@ -210,12 +221,6 @@ function initMobileMenu() {
     
     // Close menu when overlay is clicked
     mobileOverlay.addEventListener('click', closeMobileMenu);
-    
-    // Close menu when navigation item is clicked
-    const navLinks = sidebar.querySelectorAll('.nav-links li');
-    navLinks.forEach(link => {
-        link.addEventListener('click', closeMobileMenu);
-    });
 }
 
 // Make closeMobileMenu available globally

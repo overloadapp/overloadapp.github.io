@@ -1541,6 +1541,7 @@ canvas {
     .exercise-grid {
         grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
         justify-content: center !important;
+        justify-items: center !important;
     }
     
     .stats-grid {
@@ -1596,11 +1597,13 @@ canvas {
     
     .exercise-grid {
         grid-template-columns: 1fr !important;
-        justify-content: stretch !important;
+        justify-content: center !important;
+        justify-items: center !important;
     }
     
     .exercise-card {
         max-width: 100% !important;
+        width: 100% !important;
     }
 }
 
