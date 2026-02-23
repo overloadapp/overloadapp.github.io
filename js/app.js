@@ -169,6 +169,28 @@ function initNavigation() {
 }
 
 // --- Mobile Menu ---
+function closeMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    
+    if (sidebar) sidebar.classList.remove('mobile-active');
+    if (mobileOverlay) mobileOverlay.classList.remove('active');
+    if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function openMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const mobileOverlay = document.getElementById('mobile-overlay');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    
+    if (sidebar) sidebar.classList.add('mobile-active');
+    if (mobileOverlay) mobileOverlay.classList.add('active');
+    if (mobileMenuBtn) mobileMenuBtn.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
 function initMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileOverlay = document.getElementById('mobile-overlay');
@@ -189,28 +211,15 @@ function initMobileMenu() {
     // Close menu when overlay is clicked
     mobileOverlay.addEventListener('click', closeMobileMenu);
     
-    // Prevent body scroll when menu is open
-    function openMobileMenu() {
-        sidebar.classList.add('mobile-active');
-        mobileOverlay.classList.add('active');
-        mobileMenuBtn.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    
-    // Make closeMobileMenu available globally so navigation can use it
-    window.closeMobileMenu = closeMobileMenu;
+    // Close menu when navigation item is clicked
+    const navLinks = sidebar.querySelectorAll('.nav-links li');
+    navLinks.forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
 }
 
-function closeMobileMenu() {
-    const sidebar = document.querySelector('.sidebar');
-    const mobileOverlay = document.getElementById('mobile-overlay');
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    
-    if (sidebar) sidebar.classList.remove('mobile-active');
-    if (mobileOverlay) mobileOverlay.classList.remove('active');
-    if (mobileMenuBtn) mobileMenuBtn.classList.remove('active');
-    document.body.style.overflow = '';
-}
+// Make closeMobileMenu available globally
+window.closeMobileMenu = closeMobileMenu;
 
 function showView(viewId) {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));

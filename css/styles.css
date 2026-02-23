@@ -1479,7 +1479,7 @@ canvas {
     }
     
     .sidebar.mobile-active {
-        transform: translateX(0);
+        transform: translateX(0) !important;
     }
     
     .content {
