@@ -371,7 +371,6 @@ body {
     display: flex;
     flex-direction: column;
     z-index: 100;
-    transform: translateZ(0);
 }
 
 .logo {
@@ -1471,7 +1470,7 @@ canvas {
     }
     
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(-100%) translateZ(0);
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         z-index: 2000;
         width: 280px;
@@ -1479,7 +1478,7 @@ canvas {
     }
     
     .sidebar.mobile-active {
-        transform: translateX(0) !important;
+        transform: translateX(0) translateZ(0);
     }
     
     .content {
@@ -1698,9 +1697,13 @@ img {
 
 /* Force GPU acceleration for key elements */
 .hero-section,
-.sidebar,
 .content {
     transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+.sidebar {
     backface-visibility: hidden;
     perspective: 1000px;
 }
