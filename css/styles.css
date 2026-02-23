@@ -85,6 +85,7 @@ body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    overflow-y: auto;
     transition: var(--transition);
 }
 
@@ -181,7 +182,6 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 60vh;
 }
 
 .hero-badge {
@@ -1518,33 +1518,63 @@ canvas {
 @media (max-width: 600px) {
     .hero-section {
         justify-content: flex-start;
-        padding-top: 5rem;
+        overflow-y: auto;
+        height: 100vh;
+        min-height: -webkit-fill-available;
+    }
+    
+    .hero-glow {
+        position: fixed;
+    }
+    
+    .hero-nav {
+        padding: 1.25rem;
+        flex-direction: row;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        background: rgba(10, 10, 15, 0.9);
+        backdrop-filter: blur(10px);
+    }
+    
+    .hero-logo {
+        font-size: 1.25rem;
+    }
+    
+    .hero-logo .logo-image {
+        height: 48px;
+    }
+    
+    .hero-content {
+        padding: 2rem 1.5rem 3rem;
+        margin-top: 0;
+        width: 100%;
     }
     
     .hero-title {
         font-size: 2.25rem;
         line-height: 1.2;
-        margin-bottom: 1.25rem;
+        margin-bottom: 1rem;
     }
     
     .hero-subtitle {
         font-size: 0.9375rem;
         line-height: 1.6;
-        margin-bottom: 2rem;
+        margin-bottom: 1.75rem;
     }
     
     .hero-badge {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
         font-size: 0.8125rem;
     }
     
     .hero-cta {
-        margin-bottom: 2.5rem;
+        margin-bottom: 2rem;
     }
     
     .hero-stats {
         flex-direction: row;
-        gap: 2rem;
+        gap: 1.5rem;
         flex-wrap: wrap;
         justify-content: center;
     }
@@ -1561,28 +1591,10 @@ canvas {
         font-size: 0.75rem;
     }
     
-    .hero-nav {
-        padding: 1.25rem;
-        flex-direction: row;
-        align-items: center;
-    }
-    
-    .hero-logo {
-        font-size: 1.25rem;
-    }
-    
-    .hero-logo .logo-image {
-        height: 48px;
-    }
-    
-    .hero-content {
-        padding: 1.5rem;
-        min-height: auto;
-        margin-top: 2rem;
-    }
-    
     .scroll-indicator {
-        bottom: 1.5rem;
+        position: relative;
+        bottom: auto;
+        margin-top: 2rem;
     }
     
     .section-header {
@@ -1636,49 +1648,6 @@ canvas {
 }
 
 @media (max-width: 480px) {
-    .hero-section {
-        padding-top: 4rem;
-    }
-    
-    .hero-title {
-        font-size: 1.875rem;
-        line-height: 1.2;
-        margin-bottom: 1rem;
-    }
-    
-    .hero-subtitle {
-        font-size: 0.875rem;
-        line-height: 1.5;
-        margin-bottom: 1.75rem;
-    }
-    
-    .hero-badge {
-        font-size: 0.75rem;
-        padding: 0.4rem 0.875rem;
-        margin-bottom: 1.25rem;
-    }
-    
-    .hero-cta {
-        margin-bottom: 2rem;
-    }
-    
-    .cta-button {
-        padding: 0.875rem 1.5rem;
-        font-size: 0.9375rem;
-    }
-    
-    .hero-stats {
-        gap: 1.5rem;
-    }
-    
-    .stat-number {
-        font-size: 1.75rem;
-    }
-    
-    .stat-label {
-        font-size: 0.6875rem;
-    }
-    
     .hero-nav {
         padding: 1rem;
     }
@@ -1696,8 +1665,46 @@ canvas {
     }
     
     .hero-content {
-        padding: 1rem;
-        margin-top: 1rem;
+        padding: 1.5rem 1rem 2.5rem;
+    }
+    
+    .hero-title {
+        font-size: 1.875rem;
+        line-height: 1.25;
+        margin-bottom: 0.875rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-badge {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.875rem;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-cta {
+        margin-bottom: 1.75rem;
+    }
+    
+    .cta-button {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9375rem;
+    }
+    
+    .hero-stats {
+        gap: 1.25rem;
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
+    }
+    
+    .stat-label {
+        font-size: 0.6875rem;
     }
     
     body {
