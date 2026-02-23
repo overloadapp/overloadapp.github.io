@@ -177,6 +177,11 @@ body {
     text-align: center;
     max-width: 900px;
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
 }
 
 .hero-badge {
@@ -1390,7 +1395,7 @@ canvas {
     display: none;
     position: fixed;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     z-index: 2001;
     width: 50px;
     height: 50px;
@@ -1511,31 +1516,73 @@ canvas {
 }
 
 @media (max-width: 600px) {
+    .hero-section {
+        justify-content: flex-start;
+        padding-top: 5rem;
+    }
+    
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2.25rem;
+        line-height: 1.2;
+        margin-bottom: 1.25rem;
     }
     
     .hero-subtitle {
         font-size: 0.9375rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+    
+    .hero-badge {
+        margin-bottom: 1.5rem;
+        font-size: 0.8125rem;
+    }
+    
+    .hero-cta {
+        margin-bottom: 2.5rem;
     }
     
     .hero-stats {
-        flex-direction: column;
-        gap: 1.5rem;
+        flex-direction: row;
+        gap: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .hero-stat {
+        flex: 0 1 auto;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+    
+    .stat-label {
+        font-size: 0.75rem;
     }
     
     .hero-nav {
-        padding: 1rem;
-        flex-direction: column;
-        gap: 1rem;
+        padding: 1.25rem;
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .hero-logo {
+        font-size: 1.25rem;
     }
     
     .hero-logo .logo-image {
-        height: 60px;
+        height: 48px;
     }
     
     .hero-content {
-        padding: 1rem;
+        padding: 1.5rem;
+        min-height: auto;
+        margin-top: 2rem;
+    }
+    
+    .scroll-indicator {
+        bottom: 1.5rem;
     }
     
     .section-header {
@@ -1589,18 +1636,68 @@ canvas {
 }
 
 @media (max-width: 480px) {
+    .hero-section {
+        padding-top: 4rem;
+    }
+    
     .hero-title {
-        font-size: 2rem;
+        font-size: 1.875rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.875rem;
+        line-height: 1.5;
+        margin-bottom: 1.75rem;
     }
     
     .hero-badge {
         font-size: 0.75rem;
-        padding: 0.5rem 1rem;
+        padding: 0.4rem 0.875rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .hero-cta {
+        margin-bottom: 2rem;
     }
     
     .cta-button {
         padding: 0.875rem 1.5rem;
         font-size: 0.9375rem;
+    }
+    
+    .hero-stats {
+        gap: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 1.75rem;
+    }
+    
+    .stat-label {
+        font-size: 0.6875rem;
+    }
+    
+    .hero-nav {
+        padding: 1rem;
+    }
+    
+    .hero-logo {
+        font-size: 1.125rem;
+    }
+    
+    .hero-logo .logo-image {
+        height: 40px;
+    }
+    
+    .hero-logo .logo-text {
+        display: none;
+    }
+    
+    .hero-content {
+        padding: 1rem;
+        margin-top: 1rem;
     }
     
     body {
@@ -1637,7 +1734,7 @@ canvas {
         width: 44px;
         height: 44px;
         top: 0.75rem;
-        left: 0.75rem;
+        right: 0.75rem;
     }
 }
 
