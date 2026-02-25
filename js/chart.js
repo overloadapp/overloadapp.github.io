@@ -31,12 +31,13 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
     // Sort by date just in case
     dataPoints.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    const padding = 50;
+    const padding = 60;
+    const leftPadding = 70; // Extra space for weight labels
     const maxWeight = Math.max(...dataPoints.map(d => d.weight));
     const minWeight = Math.min(...dataPoints.map(d => d.weight));
     const yRange = (maxWeight - minWeight) || 10; 
     
-    const scaleX = (width - padding * 2) / Math.max(1, (dataPoints.length - 1));
+    const scaleX = (width - leftPadding - padding) / Math.max(1, (dataPoints.length - 1));
     const scaleY = (height - padding * 2) / yRange;
 
     // Draw Grid and Y-Axis labels (dark theme)
@@ -51,11 +52,11 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
         const yPos = height - padding - ((yValue - minWeight) * scaleY);
         
         ctx.beginPath();
-        ctx.moveTo(padding, yPos);
+        ctx.moveTo(leftPadding, yPos);
         ctx.lineTo(width - padding, yPos);
         ctx.stroke();
         
-        ctx.fillText(yValue.toFixed(1) + ' kg', padding - 10, yPos + 4);
+        ctx.fillText(yValue.toFixed(1) + ' kg', leftPadding - 10, yPos + 4);
     }
 
     // Draw gradient for line
@@ -65,18 +66,18 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
 
     // Draw area fill
     ctx.beginPath();
-    const firstX = padding;
+    const firstX = leftPadding;
     const firstY = height - padding - ((dataPoints[0].weight - minWeight) * scaleY);
     ctx.moveTo(firstX, height - padding);
     ctx.lineTo(firstX, firstY);
     
     dataPoints.forEach((point, index) => {
-        const xPos = padding + (index * scaleX);
+        const xPos = leftPadding + (index * scaleX);
         const yPos = height - padding - ((point.weight - minWeight) * scaleY);
         ctx.lineTo(xPos, yPos);
     });
     
-    const lastX = padding + ((dataPoints.length - 1) * scaleX);
+    const lastX = leftPadding + ((dataPoints.length - 1) * scaleX);
     ctx.lineTo(lastX, height - padding);
     ctx.closePath();
     
@@ -96,7 +97,7 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
     ctx.shadowBlur = 10;
 
     dataPoints.forEach((point, index) => {
-        const xPos = padding + (index * scaleX);
+        const xPos = leftPadding + (index * scaleX);
         const yPos = height - padding - ((point.weight - minWeight) * scaleY);
         
         if (index === 0) ctx.moveTo(xPos, yPos);
@@ -107,7 +108,7 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
 
     // Draw Points
     dataPoints.forEach((point, index) => {
-        const xPos = padding + (index * scaleX);
+        const xPos = leftPadding + (index * scaleX);
         const yPos = height - padding - ((point.weight - minWeight) * scaleY);
         
         // Outer glow
