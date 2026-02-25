@@ -1,8 +1,23 @@
 export function drawSmoothLineChart(canvasId, dataPoints) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
-    const width = canvas.width;
-    const height = canvas.height;
+    
+    // Get device pixel ratio for crisp rendering
+    const dpr = window.devicePixelRatio || 1;
+    
+    // Set display size (css pixels)
+    const displayWidth = canvas.clientWidth || 600;
+    const displayHeight = displayWidth * 0.5; // 2:1 aspect ratio
+    
+    // Set actual canvas size (scaled for device pixel ratio)
+    canvas.width = displayWidth * dpr;
+    canvas.height = displayHeight * dpr;
+    
+    // Scale context to match device pixel ratio
+    ctx.scale(dpr, dpr);
+    
+    const width = displayWidth;
+    const height = displayHeight;
     
     ctx.clearRect(0, 0, width, height);
     if (!dataPoints || dataPoints.length === 0) {
