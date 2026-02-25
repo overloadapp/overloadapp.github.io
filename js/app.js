@@ -356,10 +356,29 @@ async function fetchExerciseData(exerciseId, daysFilter) {
         logs = logs.filter(log => new Date(log.date) >= cutoff);
     }
 
-    updateStatsAndGraph(logs);
+    // For the graph, only use the max weight per date
+    const graphData = getMaxWeightPerDate(logs);
+    
+    updateStatsAndGraph(logs, graphData);
 }
 
-function updateStatsAndGraph(logs) {
+// Helper function to get max weight per date for chart
+function getMaxWeightPerDate(logs) {
+    const dateMap = {};
+    
+    // Group by date and keep only the max weight for each date
+    logs.forEach(log => {
+        const date = log.date;
+        if (!dateMap[date] || log.weight > dateMap[date].weight) {
+            dateMap[date] = log;
+        }
+    });
+    
+    // Convert back to array and sort by date
+    return Object.values(dateMap).sort((a, b) => new Date(a.date) - new Date(b.date));
+}
+
+function updateStatsAndGraph(logs, graphData) {
     if (logs.length === 0) {
         drawSmoothLineChart('progress-chart', []);
         document.getElementById('stat-avg').textContent = '0 kg';
@@ -382,7 +401,8 @@ function updateStatsAndGraph(logs) {
     document.getElementById('stat-sessions').textContent = logs.length;
     document.getElementById('stat-1rm').textContent = `${est1RM.toFixed(1)} kg`;
 
-    drawSmoothLineChart('progress-chart', logs);
+    // Use graphData (max weight per date) for the chart
+    drawSmoothLineChart('progress-chart', graphData || logs);
 }
 
 // --- Forms & Saving to Firestore ---
@@ -439,18 +459,73 @@ async function saveLog(exerciseId, weight, reps, sets, date) {
     }
     
     try {
+        const newWeight = Number(weight);
+        
+        // Check for PR - get all previous logs for this exercise
+        const q = query(collection(db, `users/${currentUser.uid}/exerciseLogs`), where("exerciseId", "==", exerciseId));
+        const querySnapshot = await getDocs(q);
+        
+        let previousMaxWeight = 0;
+        querySnapshot.forEach((doc) => {
+            const logWeight = Number(doc.data().weight);
+            if (logWeight > previousMaxWeight) {
+                previousMaxWeight = logWeight;
+            }
+        });
+        
+        // Save the new log
         await addDoc(collection(db, `users/${currentUser.uid}/exerciseLogs`), {
             exerciseId,
-            weight: Number(weight),
+            weight: newWeight,
             reps: Number(reps),
             sets: Number(sets),
             date: date, // Storing as YYYY-MM-DD string for easy vanilla JS sorting
             timestamp: Date.now()
         });
+        
+        // Check if this is a new PR
+        if (previousMaxWeight > 0 && newWeight > previousMaxWeight) {
+            // Get exercise name
+            const exercise = exercises.find(ex => ex.id === exerciseId);
+            const exerciseName = exercise ? exercise.name : 'Exercise';
+            
+            // Trigger PR celebration
+            if (window.prCelebration) {
+                setTimeout(() => {
+                    window.prCelebration.show(exerciseName, previousMaxWeight, newWeight);
+                }, 300); // Small delay for better UX
+            }
+        }
+        
         showToast('Progress saved successfully! 💪', 'success');
     } catch (e) {
         console.error("Error adding document: ", e);
         showToast('Failed to save progress. Please try again.', 'error');
+    }
+}
+
+// --- Delete Log ---
+async function deleteLog(logId, exerciseName) {
+    if (!currentUser) return;
+    
+    if (!confirm(`Are you sure you want to delete this log for ${exerciseName}?`)) {
+        return;
+    }
+    
+    try {
+        await deleteDoc(doc(db, `users/${currentUser.uid}/exerciseLogs`, logId));
+        showToast('Log deleted successfully!', 'success');
+        
+        // Refresh data
+        await fetchAllLogs();
+        
+        // If we're on the exercise detail page, refresh that too
+        if (currentExerciseId) {
+            await fetchExerciseData(currentExerciseId, 'all');
+        }
+    } catch (error) {
+        console.error('Error deleting log:', error);
+        showToast('Failed to delete log. Please try again.', 'error');
     }
 }
 
@@ -460,7 +535,7 @@ async function fetchAllLogs() {
     
     const querySnapshot = await getDocs(collection(db, `users/${currentUser.uid}/exerciseLogs`));
     allLogs = [];
-    querySnapshot.forEach((doc) => allLogs.push(doc.data()));
+    querySnapshot.forEach((doc) => allLogs.push({ id: doc.id, ...doc.data() }));
     updateDashboard();
 }
 
@@ -511,7 +586,21 @@ function updateDashboard() {
                 <div class="activity-weight">${log.weight}kg</div>
                 <div class="activity-reps">${log.reps} reps</div>
             </div>
+            <button class="delete-log-btn" data-log-id="${log.id}" title="Delete log">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+            </button>
         `;
+        
+        // Add delete button listener
+        const deleteBtn = div.querySelector('.delete-log-btn');
+        deleteBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await deleteLog(log.id, ex.name);
+        });
+        
         recentList.appendChild(div);
     });
     

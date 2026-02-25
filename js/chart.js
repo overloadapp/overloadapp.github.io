@@ -47,8 +47,10 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
     ctx.fillStyle = '#718096';
     ctx.textAlign = 'right';
     
+    // Draw grid lines - highest weight at TOP, lowest at BOTTOM
     for (let i = 0; i <= 4; i++) {
-        const yValue = minWeight + (yRange / 4) * i;
+        // Reverse the order: start from maxWeight and go down to minWeight
+        const yValue = maxWeight - (yRange / 4) * i;
         const yPos = height - padding - ((yValue - minWeight) * scaleY);
         
         ctx.beginPath();
@@ -56,6 +58,7 @@ export function drawSmoothLineChart(canvasId, dataPoints) {
         ctx.lineTo(width - padding, yPos);
         ctx.stroke();
         
+        // Label shows the actual weight value
         ctx.fillText(yValue.toFixed(1) + ' kg', leftPadding - 10, yPos + 4);
     }
 
