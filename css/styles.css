@@ -69,7 +69,191 @@ body {
 }
 
 /* ========================================
-   HERO SECTION
+   LANDING PAGE
+   ======================================== */
+
+.landing-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.logo-large {
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: logoFadeIn 1s ease-out;
+}
+
+.logo-large img {
+    width: 120px;
+    height: 120px;
+    filter: drop-shadow(0 10px 30px rgba(102, 126, 234, 0.4));
+}
+
+@keyframes logoFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--text-primary);
+    animation: titleSlideUp 1s ease-out 0.2s backwards;
+}
+
+@keyframes titleSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-description {
+    font-size: 1.25rem;
+    line-height: 1.8;
+    text-align: center;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    animation: descriptionFadeIn 1s ease-out 0.4s backwards;
+}
+
+@keyframes descriptionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 4rem;
+    animation: buttonsPop 1s ease-out 0.6s backwards;
+}
+
+@keyframes buttonsPop {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.large-btn {
+    padding: 1.25rem 3rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.features-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    animation: featuresFadeIn 1s ease-out 0.8s backwards;
+}
+
+@keyframes featuresFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feature-pill {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
+}
+
+.feature-pill:hover {
+    border-color: var(--accent-purple);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.feature-icon {
+    font-size: 1.25rem;
+}
+
+/* Responsive landing page */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1.125rem;
+    }
+    
+    .logo-large img {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .hero-description {
+        font-size: 1rem;
+    }
+    
+    .large-btn {
+        padding: 1rem 2rem;
+        font-size: 1rem;
+    }
+    
+    .feature-pill {
+        font-size: 0.875rem;
+        padding: 0.625rem 1.25rem;
+    }
+}
+
+/* ========================================
+   HERO SECTION (for app.html)
    ======================================== */
 
 .hero-section {
@@ -2446,6 +2630,181 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     .toast {
         min-width: unset;
         width: 100%;
+    }
+}
+
+/* ========================================
+   APPROVAL SCREEN
+   ======================================== */
+
+.approval-icon {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    animation: approvalPulse 2s ease-in-out infinite;
+}
+
+@keyframes approvalPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+.approval-details {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    text-align: left;
+}
+
+.approval-details p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+}
+
+.approval-details p:last-child {
+    margin-bottom: 0;
+}
+
+.approval-details strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.approval-message {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+    font-size: 0.875rem;
+}
+
+/* ========================================
+   APPROVAL SUCCESS SCREEN
+   ======================================== */
+
+.success-checkmark {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+}
+
+.checkmark {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: block;
+    stroke-width: 3;
+    stroke: #10b981;
+    stroke-miterlimit: 10;
+    box-shadow: 0 0 0 #10b981;
+    animation: checkmarkFill 0.4s ease-in-out 0.4s forwards, checkmarkScale 0.3s ease-in-out 0.9s both;
+}
+
+.checkmark-circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 3;
+    stroke-miterlimit: 10;
+    stroke: #10b981;
+    fill: none;
+    animation: checkmarkStroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    stroke: #10b981;
+    stroke-width: 3;
+    animation: checkmarkStroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes checkmarkStroke {
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes checkmarkScale {
+    0%, 100% {
+        transform: none;
+    }
+    50% {
+        transform: scale3d(1.1, 1.1, 1);
+    }
+}
+
+@keyframes checkmarkFill {
+    100% {
+        box-shadow: 0 0 0 30px rgba(16, 185, 129, 0.1);
+    }
+}
+
+.approved-title {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: approvedTitleSlide 0.6s ease-out 1s backwards;
+}
+
+@keyframes approvedTitleSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.approved-message {
+    animation: approvedMessageFade 0.6s ease-out 1.2s backwards;
+}
+
+.approved-message p {
+    text-align: left;
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+}
+
+@keyframes approvedMessageFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#enter-app-btn {
+    animation: enterButtonPop 0.4s ease-out 1.4s backwards;
+    font-size: 1.125rem;
+    padding: 1.25rem 2.5rem;
+}
+
+@keyframes enterButtonPop {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 

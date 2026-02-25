@@ -1,28 +1,22 @@
 import { 
     auth, 
+    db,
     googleProvider,
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword,
     signInWithPopup,
-    sendPasswordResetEmail
+    signOut,
+    onAuthStateChanged,
+    doc,
+    setDoc,
+    getDoc
 } from './firebase-config.js';
 
 // Get DOM elements
-const loginForm = document.getElementById('login-form');
-const signupForm = document.getElementById('signup-form');
-const forgotPasswordForm = document.getElementById('forgot-password-form');
 const googleLoginBtn = document.getElementById('google-login-btn');
-const googleSignupBtn = document.getElementById('google-signup-btn');
-
 const loginContainer = document.getElementById('login-form-container');
-const signupContainer = document.getElementById('signup-form-container');
-const forgotPasswordContainer = document.getElementById('forgot-password-container');
-
-const showSignupLink = document.getElementById('show-signup');
-const showLoginLink = document.getElementById('show-login');
-const forgotPasswordLink = document.getElementById('forgot-password');
-const backToLoginLink = document.getElementById('back-to-login');
-
+const awaitingApprovalContainer = document.getElementById('awaiting-approval-container');
+const approvedSuccessContainer = document.getElementById('approved-success-container');
+const signOutPendingBtn = document.getElementById('sign-out-pending-btn');
+const enterAppBtn = document.getElementById('enter-app-btn');
 const authLoading = document.getElementById('auth-loading');
 
 // Show/hide loading
@@ -34,203 +28,160 @@ function hideLoading() {
     authLoading.style.display = 'none';
 }
 
-// Show different forms
+// Show awaiting approval screen
+function showAwaitingApproval(user) {
+    loginContainer.style.display = 'none';
+    awaitingApprovalContainer.style.display = 'block';
+    approvedSuccessContainer.style.display = 'none';
+    document.getElementById('pending-user-email').textContent = user.email;
+}
+
+// Show approval success screen
+function showApprovalSuccess() {
+    loginContainer.style.display = 'none';
+    awaitingApprovalContainer.style.display = 'none';
+    approvedSuccessContainer.style.display = 'block';
+}
+
+// Show login screen
 function showLogin() {
     loginContainer.style.display = 'block';
-    signupContainer.style.display = 'none';
-    forgotPasswordContainer.style.display = 'none';
+    awaitingApprovalContainer.style.display = 'none';
+    approvedSuccessContainer.style.display = 'none';
 }
 
-function showSignup() {
-    loginContainer.style.display = 'none';
-    signupContainer.style.display = 'block';
-    forgotPasswordContainer.style.display = 'none';
-}
-
-function showForgotPassword() {
-    loginContainer.style.display = 'none';
-    signupContainer.style.display = 'none';
-    forgotPasswordContainer.style.display = 'block';
-}
-
-// Event listeners for switching forms
-showSignupLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showSignup();
-});
-
-showLoginLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showLogin();
-});
-
-forgotPasswordLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showForgotPassword();
-});
-
-backToLoginLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    showLogin();
-});
-
-// Login with Email/Password
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const rememberMe = document.getElementById('remember-me').checked;
-    
-    showLoading();
-    
+// Check if user is approved and if they've seen the welcome screen
+async function checkUserApproval(user) {
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
         
-        // Store remember me preference
-        if (rememberMe) {
-            localStorage.setItem('rememberMe', 'true');
+        if (!userDoc.exists()) {
+            // New user - create document with pending status
+            await setDoc(userDocRef, {
+                email: user.email,
+                displayName: user.displayName || '',
+                photoURL: user.photoURL || '',
+                approved: false,
+                seenWelcome: false,
+                createdAt: new Date().toISOString(),
+                requestedAt: new Date().toISOString()
+            });
+            return { approved: false, seenWelcome: false };
         }
         
-        // Redirect to main app
-        window.location.href = 'index.html';
+        const data = userDoc.data();
+        return { 
+            approved: data.approved === true,
+            seenWelcome: data.seenWelcome === true
+        };
     } catch (error) {
-        hideLoading();
-        let errorMessage = 'Failed to sign in. ';
-        
-        switch (error.code) {
-            case 'auth/user-not-found':
-                errorMessage += 'No account found with this email.';
-                break;
-            case 'auth/wrong-password':
-                errorMessage += 'Incorrect password.';
-                break;
-            case 'auth/invalid-email':
-                errorMessage += 'Invalid email address.';
-                break;
-            case 'auth/user-disabled':
-                errorMessage += 'This account has been disabled.';
-                break;
-            default:
-                errorMessage += error.message;
-        }
-        
-        alert(errorMessage);
-    }
-});
-
-// Sign up with Email/Password
-signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    const confirmPassword = document.getElementById('signup-password-confirm').value;
-    
-    // Validate passwords match
-    if (password !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-    }
-    
-    // Validate password length
-    if (password.length < 6) {
-        alert('Password must be at least 6 characters long.');
-        return;
-    }
-    
-    showLoading();
-    
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        
-        // Redirect to main app
-        window.location.href = 'index.html';
-    } catch (error) {
-        hideLoading();
-        let errorMessage = 'Failed to create account. ';
-        
-        switch (error.code) {
-            case 'auth/email-already-in-use':
-                errorMessage += 'An account with this email already exists.';
-                break;
-            case 'auth/invalid-email':
-                errorMessage += 'Invalid email address.';
-                break;
-            case 'auth/weak-password':
-                errorMessage += 'Password is too weak.';
-                break;
-            default:
-                errorMessage += error.message;
-        }
-        
-        alert(errorMessage);
-    }
-});
-
-// Google Sign In (both login and signup)
-async function handleGoogleSignIn() {
-    showLoading();
-    
-    try {
-        const result = await signInWithPopup(auth, googleProvider);
-        
-        // Redirect to main app
-        window.location.href = 'index.html';
-    } catch (error) {
-        hideLoading();
-        let errorMessage = 'Failed to sign in with Google. ';
-        
-        switch (error.code) {
-            case 'auth/popup-closed-by-user':
-                errorMessage = 'Sign in cancelled.';
-                break;
-            case 'auth/popup-blocked':
-                errorMessage += 'Please allow popups for this site.';
-                break;
-            case 'auth/account-exists-with-different-credential':
-                errorMessage += 'An account already exists with the same email.';
-                break;
-            default:
-                errorMessage += error.message;
-        }
-        
-        alert(errorMessage);
+        console.error('Error checking user approval:', error);
+        return { approved: false, seenWelcome: false };
     }
 }
 
-googleLoginBtn.addEventListener('click', handleGoogleSignIn);
-googleSignupBtn.addEventListener('click', handleGoogleSignIn);
-
-// Forgot Password
-forgotPasswordForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const email = document.getElementById('reset-email').value;
-    
-    showLoading();
-    
+// Mark welcome screen as seen
+async function markWelcomeSeen(user) {
     try {
-        await sendPasswordResetEmail(auth, email);
+        const userDocRef = doc(db, 'users', user.uid);
+        await setDoc(userDocRef, { seenWelcome: true }, { merge: true });
+    } catch (error) {
+        console.error('Error marking welcome as seen:', error);
+    }
+}
+
+// Auth State Observer
+onAuthStateChanged(auth, async (user) => {
+    hideLoading();
+    
+    if (user) {
+        showLoading();
+        
+        // Check if user is approved and if they've seen the welcome screen
+        const { approved, seenWelcome } = await checkUserApproval(user);
+        
         hideLoading();
-        alert('Password reset email sent! Check your inbox.');
+        
+        if (approved) {
+            if (!seenWelcome) {
+                // First time approved - show celebration screen
+                showApprovalSuccess();
+            } else {
+                // Already seen welcome - go straight to app
+                window.location.href = 'app.html';
+            }
+        } else {
+            // Not approved - show waiting screen
+            showAwaitingApproval(user);
+        }
+    } else {
+        // Not logged in - show login screen
         showLogin();
-        forgotPasswordForm.reset();
-    } catch (error) {
-        hideLoading();
-        let errorMessage = 'Failed to send reset email. ';
-        
-        switch (error.code) {
-            case 'auth/user-not-found':
-                errorMessage += 'No account found with this email.';
-                break;
-            case 'auth/invalid-email':
-                errorMessage += 'Invalid email address.';
-                break;
-            default:
-                errorMessage += error.message;
-        }
-        
-        alert(errorMessage);
     }
 });
+
+// Google Sign-In
+if (googleLoginBtn) {
+    googleLoginBtn.addEventListener('click', async () => {
+        showLoading();
+        
+        try {
+            await signInWithPopup(auth, googleProvider);
+            // Auth state observer will handle the rest
+        } catch (error) {
+            hideLoading();
+            console.error('Google sign-in error:', error);
+            
+            let errorMessage = 'Failed to sign in with Google. ';
+            
+            switch (error.code) {
+                case 'auth/popup-closed-by-user':
+                    errorMessage = 'Sign-in popup was closed. Please try again.';
+                    break;
+                case 'auth/cancelled-popup-request':
+                    // User cancelled, no need to show error
+                    return;
+                case 'auth/popup-blocked':
+                    errorMessage = 'Sign-in popup was blocked by your browser. Please allow popups and try again.';
+                    break;
+                default:
+                    errorMessage += error.message;
+            }
+            
+            alert(errorMessage);
+        }
+    });
+}
+
+// Sign out from pending screen
+if (signOutPendingBtn) {
+    signOutPendingBtn.addEventListener('click', async () => {
+        showLoading();
+        try {
+            await signOut(auth);
+            showLogin();
+        } catch (error) {
+            console.error('Sign out error:', error);
+            alert('Failed to sign out. Please try again.');
+        }
+        hideLoading();
+    });
+}
+
+// Enter app from approval success screen
+if (enterAppBtn) {
+    enterAppBtn.addEventListener('click', async () => {
+        showLoading();
+        try {
+            // Mark welcome as seen
+            await markWelcomeSeen(auth.currentUser);
+            // Redirect to app
+            window.location.href = 'app.html';
+        } catch (error) {
+            console.error('Error entering app:', error);
+            // Even if marking fails, still let them in
+            window.location.href = 'app.html';
+        }
+    });
+}

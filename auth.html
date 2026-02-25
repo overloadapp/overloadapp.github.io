@@ -32,39 +32,12 @@
             <h1>Over<span class="gradient-text">load</span></h1>
         </div>
 
-        <!-- Login Form -->
+        <!-- Google Sign-In Only -->
         <div id="login-form-container" class="auth-form-container">
-            <h2 class="auth-title">Welcome Back</h2>
-            <p class="auth-subtitle">Sign in to continue your fitness journey</p>
+            <h2 class="auth-title">Welcome to Overload</h2>
+            <p class="auth-subtitle">Sign in with Google to continue</p>
 
-            <form id="login-form" class="auth-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <input type="email" id="login-email" required placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required placeholder="••••••••">
-                </div>
-                
-                <div class="auth-options">
-                    <label class="remember-me">
-                        <input type="checkbox" id="remember-me">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="#" id="forgot-password" class="auth-link">Forgot password?</a>
-                </div>
-
-                <button type="submit" class="btn primary-btn w-100 glow-on-hover auth-submit-btn">
-                    Sign In
-                </button>
-            </form>
-
-            <div class="auth-divider">
-                <span>or continue with</span>
-            </div>
-
-            <button id="google-login-btn" class="btn secondary-btn w-100 google-btn">
+            <button id="google-login-btn" class="btn primary-btn w-100 google-btn glow-on-hover">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
                     <path d="M9.003 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18z" fill="#34A853"/>
@@ -74,75 +47,48 @@
                 Sign in with Google
             </button>
 
-            <p class="auth-switch">
-                Don't have an account? 
-                <a href="#" id="show-signup" class="auth-link gradient-text">Sign up</a>
+            <p class="auth-subtitle" style="margin-top: 2rem; font-size: 0.875rem; opacity: 0.7;">
+                Access is currently limited. You'll need approval after signing in.
             </p>
         </div>
 
-        <!-- Signup Form -->
-        <div id="signup-form-container" class="auth-form-container" style="display: none;">
-            <h2 class="auth-title">Create Account</h2>
-            <p class="auth-subtitle">Start tracking your progress today</p>
-
-            <form id="signup-form" class="auth-form">
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input type="email" id="signup-email" required placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" required placeholder="••••••••" minlength="6">
-                </div>
-                <div class="form-group">
-                    <label for="signup-password-confirm">Confirm Password</label>
-                    <input type="password" id="signup-password-confirm" required placeholder="••••••••" minlength="6">
-                </div>
-
-                <button type="submit" class="btn primary-btn w-100 glow-on-hover auth-submit-btn">
-                    Create Account
-                </button>
-            </form>
-
-            <div class="auth-divider">
-                <span>or continue with</span>
+        <!-- Awaiting Approval Screen -->
+        <div id="awaiting-approval-container" class="auth-form-container" style="display: none;">
+            <div class="approval-icon">⏳</div>
+            <h2 class="auth-title">Awaiting Approval</h2>
+            <p class="auth-subtitle">Your account is pending approval from an administrator.</p>
+            
+            <div class="approval-details">
+                <p><strong>Email:</strong> <span id="pending-user-email"></span></p>
+                <p class="approval-message">You'll receive access once your account has been reviewed. This usually takes 24-48 hours.</p>
             </div>
 
-            <button id="google-signup-btn" class="btn secondary-btn w-100 google-btn">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/>
-                    <path d="M9.003 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18z" fill="#34A853"/>
-                    <path d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
-                    <path d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.426 0 9.003 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71z" fill="#EA4335"/>
-                </svg>
-                Sign up with Google
+            <button id="sign-out-pending-btn" class="btn secondary-btn w-100">
+                Sign Out
             </button>
-
-            <p class="auth-switch">
-                Already have an account? 
-                <a href="#" id="show-login" class="auth-link gradient-text">Sign in</a>
-            </p>
         </div>
 
-        <!-- Forgot Password Form -->
-        <div id="forgot-password-container" class="auth-form-container" style="display: none;">
-            <h2 class="auth-title">Reset Password</h2>
-            <p class="auth-subtitle">Enter your email to receive a reset link</p>
+        <!-- Approved Success Screen -->
+        <div id="approved-success-container" class="auth-form-container" style="display: none;">
+            <div class="success-checkmark">
+                <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+            </div>
+            <h2 class="auth-title approved-title">You're Approved! 🎉</h2>
+            <p class="auth-subtitle">Welcome to Overload. Your journey to peak performance starts now.</p>
+            
+            <div class="approval-details approved-message">
+                <p>✨ Access granted to all features</p>
+                <p>💪 Track your workouts and progress</p>
+                <p>📈 Visualize your gains with charts</p>
+                <p>🏆 Celebrate your personal records</p>
+            </div>
 
-            <form id="forgot-password-form" class="auth-form">
-                <div class="form-group">
-                    <label for="reset-email">Email</label>
-                    <input type="email" id="reset-email" required placeholder="your@email.com">
-                </div>
-
-                <button type="submit" class="btn primary-btn w-100 glow-on-hover auth-submit-btn">
-                    Send Reset Link
-                </button>
-            </form>
-
-            <p class="auth-switch">
-                <a href="#" id="back-to-login" class="auth-link gradient-text">← Back to sign in</a>
-            </p>
+            <button id="enter-app-btn" class="btn primary-btn w-100 glow-on-hover">
+                Let's Go! 💪
+            </button>
         </div>
     </div>
 

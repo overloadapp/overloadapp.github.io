@@ -13,12 +13,13 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDHbuUnWGH83j7EjG70he7WtmdprrKTD9I",
-  authDomain: "projectgym-bd9a5.firebaseapp.com",
-  projectId: "projectgym-bd9a5",
-  storageBucket: "projectgym-bd9a5.firebasestorage.app",
-  messagingSenderId: "908223011254",
-  appId: "1:908223011254:web:e5058062cf55eb0aef8917"
+  apiKey: "AIzaSyCo_B3IfFYsJ_cOgZqZjCjknrIG0c0YjiI",
+  authDomain: "overloadapp.firebaseapp.com",
+  projectId: "overloadapp",
+  storageBucket: "overloadapp.firebasestorage.app",
+  messagingSenderId: "1092579624396",
+  appId: "1:1092579624396:web:f2b895ef41cb51c2620969",
+  measurementId: "G-WNV5WZJEKN"
 };
 
 // Initialize Firebase
